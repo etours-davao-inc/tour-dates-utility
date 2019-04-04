@@ -2,7 +2,7 @@
   "name": "tour-dates-utility",
   "version": "0.1.0",
   "description": "Etours library for tour dates",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "babel index.js -o ./dist/index.js",
     "test": "./node_modules/.bin/mocha --require @babel/register"
