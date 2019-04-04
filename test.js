@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { getStartDate, getDays, getNights, getHotelNights } from './index';
+import { initDayRangeValues } from './index';
 import { isEqual } from 'date-fns';
 
 describe("getStartDate is working", () => {
@@ -49,5 +50,23 @@ describe("Test getHotelNights", () => {
     let nights = getNights(from, to)
     expect(getHotelNights(nights, offset)).to.equal(1)
   })
+})
+
+describe("Test initDayRangeValues", () => {
+  it("can be imported", () => {
+    expect(initDayRangeValues).to.exist
+  }) 
+  it("Returns expected values", () => {
+    let date = new Date(2019, 0, 1);
+    let duration = 3;
+    let startday = 2;
+    let drv = initDayRangeValues(date, duration, startday)
+    expect(isEqual(drv.from, new Date(2019,0,3))).to.be.true
+    expect(isEqual(drv.to, new Date(2019,0,5))).to.be.true
+    expect(drv.days).to.equal(3)
+    expect(drv.maxDays).to.equal(5)
+    expect(drv.minDays).to.equal(3)
+    expect(drv.nights).to.equal(2)
+  }) 
 })
 
