@@ -1,5 +1,12 @@
 import { addDays, differenceInDays } from 'date-fns';
 
+export const isValidDateRange = (from, to, max, min) => {
+  let days = getDays(from, to)
+  let isWithinAcceptableDays = days >= min && days <= max
+  console.log(days, isWithinAcceptableDays)
+  return isWithinAcceptableDays
+}
+
 export const getStartDate = (date, startday) => {
   return addDays(date, startday)
 }

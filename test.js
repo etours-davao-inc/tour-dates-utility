@@ -1,7 +1,26 @@
 import { expect } from 'chai';
 import { getStartDate, getDays, getNights, getHotelNights } from './index';
-import { initDayRangeValues } from './index';
+import { initDayRangeValues, isValidDateRange } from './index';
 import { isEqual } from 'date-fns';
+
+describe("Test isValidDateRange", () => {
+  it("can be imported", () => {
+    expect(isValidDateRange).to.exist
+  }) 
+  it("Returns expected values", () => {
+    let from = new Date(2019, 0, 1);
+    let max = 5;
+    let min = 3;
+    let isValid = isValidDateRange(from, new Date(2019, 0, 3), max, min)
+    let isInvalid = isValidDateRange(from, new Date(2019, 0, 6), max, min)
+    let isInvalid2 = isValidDateRange(from, new Date(2019, 0, 2), max, min)
+    let isInvalid3 = isValidDateRange(from, new Date(2018, 11, 30), max, min)
+    expect(isValid).to.be.true
+    expect(isInvalid).to.be.false
+    expect(isInvalid2).to.be.false
+    expect(isInvalid3).to.be.false
+  }) 
+})
 
 describe("Test initDayRangeValues", () => {
   it("can be imported", () => {
