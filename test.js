@@ -3,6 +3,24 @@ import { getStartDate, getDays, getNights, getHotelNights } from './index';
 import { initDayRangeValues } from './index';
 import { isEqual } from 'date-fns';
 
+describe("Test initDayRangeValues", () => {
+  it("can be imported", () => {
+    expect(initDayRangeValues).to.exist
+  }) 
+  it("Returns expected values", () => {
+    let date = new Date(2019, 0, 1);
+    let duration = 3;
+    let startday = 2;
+    let drv = initDayRangeValues(date, duration, startday)
+    expect(isEqual(drv.from, new Date(2019,0,3))).to.be.true
+    expect(isEqual(drv.to, new Date(2019,0,5))).to.be.true
+    expect(drv.days).to.equal(3)
+    expect(drv.maxDays).to.equal(5)
+    expect(drv.minDays).to.equal(3)
+    expect(drv.nights).to.equal(2)
+  }) 
+})
+
 describe("getStartDate is working", () => {
   it("getStartDate imported", () => {
     expect(getStartDate).to.exist
@@ -52,21 +70,5 @@ describe("Test getHotelNights", () => {
   })
 })
 
-describe("Test initDayRangeValues", () => {
-  it("can be imported", () => {
-    expect(initDayRangeValues).to.exist
-  }) 
-  it("Returns expected values", () => {
-    let date = new Date(2019, 0, 1);
-    let duration = 3;
-    let startday = 2;
-    let drv = initDayRangeValues(date, duration, startday)
-    expect(isEqual(drv.from, new Date(2019,0,3))).to.be.true
-    expect(isEqual(drv.to, new Date(2019,0,5))).to.be.true
-    expect(drv.days).to.equal(3)
-    expect(drv.maxDays).to.equal(5)
-    expect(drv.minDays).to.equal(3)
-    expect(drv.nights).to.equal(2)
-  }) 
-})
+
 
