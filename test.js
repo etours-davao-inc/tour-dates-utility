@@ -3,6 +3,17 @@ import { getStartDate, getDays, getNights, getHotelNights } from './index';
 import { initDayRangeValues, isValidDateRange } from './index';
 import { isEqual } from 'date-fns';
 
+describe("Test getHotelNights", () => {
+  it("can be imported", () => {
+    expect(getHotelNights).to.exist
+  })
+  it("Returns expected result", () => {
+    let nights = 2;
+    let offset = 1;
+    expect(getHotelNights(nights, offset)).to.equal(1)
+  })
+})
+
 describe("Test isValidDateRange", () => {
   it("can be imported", () => {
     expect(isValidDateRange).to.exist
