@@ -41,13 +41,15 @@ describe("Test initDayRangeValues", () => {
     let date = new Date(2019, 0, 1);
     let duration = 3;
     let startday = 2;
-    let drv = initDayRangeValues(date, duration, startday)
+    let offset = 1;
+    let drv = initDayRangeValues(date, duration, startday, offset)
     expect(isEqual(drv.from, new Date(2019,0,3))).to.be.true
     expect(isEqual(drv.to, new Date(2019,0,5))).to.be.true
     expect(drv.days).to.equal(3)
     expect(drv.maxDays).to.equal(5)
     expect(drv.minDays).to.equal(3)
     expect(drv.nights).to.equal(2)
+    expect(drv.hotelNights).to.equal(1)
   }) 
 })
 

@@ -23,15 +23,17 @@ export const getHotelNights = (nights, offset) => {
   return nights - offset
 }
 
-export const initDayRangeValues = (date, duration, startday) => {
+export const initDayRangeValues = (date, duration, startday, offset) => {
   let from = getStartDate(date, startday)
   let to = addDays(from, duration-1)
+  let nights = getNights(from, to)
   return {
     from: from,
     days: getDays(from, to),
     to: to,
     maxDays: duration+2,
     minDays: duration,
-    nights: getNights(from, to)
+    nights: nights,
+    hotelNights: getHotelNights(nights, offset),
   }
 }
