@@ -1,5 +1,56 @@
 import { addDays, differenceInDays } from 'date-fns';
 
+export const setDayRange = (state, date) => {
+  if (state.data.limitdays) {
+    return setWithLimitDays(state, date)
+  } else {
+    return setWithNoLimitDays(state, date)
+  }
+}
+
+const setWithLimitDays = (state, date) => {
+  state.userInput.tourDates.from = date
+  let to = addDays(date, state.minDays-1)
+  state.userInput.tourDates.to = to
+  state.userInput.tourDates.days = state.minDays
+  let nights = getNights(date, to)
+  state.userInput.tourDates.nights = nights
+  let offset = state.data.offsetnights
+  state.userInput.tourDates.hotelNights = getHotelNights(nights, offset)
+  state.isRange = true
+  return state
+}
+
+const setWithNoLimitDays = (state, date) => {
+  if (state.isRange) {
+    state = resetDayRange(state, date)
+  } else { 
+    let { minDays, maxDays } = state
+    let from = state.userInput.tourDates.from
+    let days = getDays(from, date)
+    let nights = getNights(from, date)
+    let isValidRange = isValidDateRange(from, date, maxDays, minDays)
+    if (isValidRange) {
+      let offset = state.data.offsetnights
+      state.userInput.tourDates.to = date
+      state.userInput.tourDates.days = days
+      state.userInput.tourDates.nights = nights
+      state.userInput.tourDates.hotelNights = getHotelNights(nights, offset)
+      state.isRange = true
+    } else {
+      state = resetDayRange(state, date) 
+    }
+  }
+  return state
+}
+
+export const resetDayRange = (state, date) => {
+  state.isRange = false;
+  state.userInput.tourDates.from = date;
+  state.userInput.tourDates.to = date;
+  return state
+}
+
 export const isValidDateRange = (from, to, max, min) => {
   let days = getDays(from, to)
   let isWithinAcceptableDays = days >= min && days <= max
@@ -23,15 +74,18 @@ export const getHotelNights = (nights, offset) => {
   return nights - offset
 }
 
-export const initDayRangeValues = (date, duration, startday, offset) => {
+
+// To Do: add limitdays
+export const initDayRangeValues = (date, duration, startday, offset, limitdays=false, plusMaxDays=2) => {
   let from = getStartDate(date, startday)
   let to = addDays(from, duration-1)
   let nights = getNights(from, to)
+  let maxDays = limitdays ? duration : duration + plusMaxDays
   return {
     from: from,
     days: getDays(from, to),
     to: to,
-    maxDays: duration+2,
+    maxDays: maxDays,
     minDays: duration,
     nights: nights,
     hotelNights: getHotelNights(nights, offset),
