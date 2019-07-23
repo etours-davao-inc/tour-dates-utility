@@ -1,4 +1,25 @@
-import { addDays, differenceInDays } from 'date-fns';
+import { addDays, differenceInDays, subDays } from 'date-fns';
+
+export const setOptionPaymentDate = (today, startDate, callback) => {
+  return new Promise((resolve, reject) => {
+    let optionDate;
+    let daysFromStartDay = differenceInDays(startDate, today);
+    // console.log("--------------");
+    // console.log(daysFromStartDay);
+    if (daysFromStartDay > 30) {
+      optionDate = subDays(startDate, 15)
+    } else if ( daysFromStartDay > 13 && daysFromStartDay < 30 ) {
+      optionDate = subDays(startDate, 14)
+    } else if ( daysFromStartDay > 7 && daysFromStartDay < 14 ) {
+      optionDate = subDays(startDate, 7)
+    } else if ( daysFromStartDay <= 7 && daysFromStartDay >= 5 ) {
+      optionDate = addDays(today, 1)
+    } else if ( daysFromStartDay < 5 ) {
+      optionDate = today;
+    }
+    resolve(optionDate);
+  })
+}
 
 export const setDayRange = (state, date) => {
   if (state.data.limitdays) {
