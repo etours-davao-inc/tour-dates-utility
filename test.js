@@ -1,8 +1,51 @@
-import { expect } from 'chai';
-import { getStartDate, getDays, getNights, getHotelNights } from './index';
+import { expect, assert } from 'chai';
+import { getStartDate, getDays, getNights, getHotelNights, setOptionPaymentDate } from './index';
 import { initDayRangeValues, isValidDateRange, setDayRange, resetDayRange } from './index';
-import { isEqual } from 'date-fns';
+import { isEqual, addDays, format } from 'date-fns';
 
+describe('Test option date function', () => {
+  const today = new Date(2019, 0, 1);
+  it("Returns expected option date", () => {
+    return setOptionPaymentDate(today, new Date(2019, 1, 4))
+      .then(optionDate => {
+        return format(optionDate, 'MM/DD/YYYY');
+      })
+      .then(optionDate => {
+        let expectedOptionDate = format(new Date(2019, 0, 20), 'MM/DD/YYYY');
+        assert.isTrue(optionDate == expectedOptionDate);
+      })
+  })
+  it("Returns expected option date", () => {
+    return setOptionPaymentDate(today, new Date(2019, 0, 3))
+      .then(optionDate => {
+        return format(optionDate, 'MM/DD/YYYY');
+      })
+      .then(optionDate => {
+        let expectedOptionDate = format(new Date(2019, 0, 1), 'MM/DD/YYYY');
+        assert.isTrue(optionDate == expectedOptionDate);
+      })
+  })
+  it("Returns expected option date", () => {
+    return setOptionPaymentDate(today, new Date(2019, 0, 6))
+      .then(optionDate => {
+        return format(optionDate, 'MM/DD/YYYY');
+      })
+      .then(optionDate => {
+        let expectedOptionDate = format(new Date(2019, 0, 2), 'MM/DD/YYYY');
+        assert.isTrue(optionDate == expectedOptionDate);
+      })
+  })  
+  it("Returns expected option date", () => {
+    return setOptionPaymentDate(today, new Date(2019, 0, 10))
+      .then(optionDate => {
+        return format(optionDate, 'MM/DD/YYYY');
+      })
+      .then(optionDate => {
+        let expectedOptionDate = format(new Date(2019, 0, 3), 'MM/DD/YYYY');
+        assert.isTrue(optionDate == expectedOptionDate);
+      })
+  })    
+})
 
 describe('Test initDayRangeValues with plusMaxDays and limitdays', () => {
   it("Returns expected values when limitdays is true", () => {
@@ -12,8 +55,8 @@ describe('Test initDayRangeValues with plusMaxDays and limitdays', () => {
     let offset = 0;
     let limitdays = true;
     let drv = initDayRangeValues(date, duration, startday, offset, limitdays)
-    expect(isEqual(drv.from, new Date(2019,0,3))).to.be.true
-    expect(isEqual(drv.to, new Date(2019,0,5))).to.be.true
+    expect(isEqual(drv.from, new Date(2019, 0, 3))).to.be.true
+    expect(isEqual(drv.to, new Date(2019, 0, 5))).to.be.true
     expect(drv.days).to.equal(3)
     expect(drv.maxDays).to.equal(3)
     expect(drv.minDays).to.equal(3)
@@ -28,15 +71,15 @@ describe('Test initDayRangeValues with plusMaxDays and limitdays', () => {
     let limitdays = false;
     let plusMaxDays = 3;
     let drv = initDayRangeValues(date, duration, startday, offset, limitdays, plusMaxDays)
-    expect(isEqual(drv.from, new Date(2019,0,3))).to.be.true
-    expect(isEqual(drv.to, new Date(2019,0,5))).to.be.true
+    expect(isEqual(drv.from, new Date(2019, 0, 3))).to.be.true
+    expect(isEqual(drv.to, new Date(2019, 0, 5))).to.be.true
     expect(drv.days).to.equal(3)
     expect(drv.maxDays).to.equal(6)
     expect(drv.minDays).to.equal(3)
     expect(drv.nights).to.equal(2)
     expect(drv.hotelNights).to.equal(2)
     console.log(drv)
-  })       
+  })
 })
 
 describe("Test setDayRange", () => {
@@ -45,7 +88,7 @@ describe("Test setDayRange", () => {
   })
   it("resets day range when already in range", () => {
     let currentState = {
-      isRange : true, 
+      isRange: true,
       userInput: {
         tourDates: {
           from: "",
@@ -57,8 +100,8 @@ describe("Test setDayRange", () => {
       }
     }
     let date = new Date()
-    let output = { 
-      isRange : false, 
+    let output = {
+      isRange: false,
       userInput: {
         tourDates: {
           from: date,
@@ -67,7 +110,7 @@ describe("Test setDayRange", () => {
       },
       data: {
         limitdays: false,
-      }      
+      }
     }
     // console.log("-----------------currentState----------------------")
     // console.log(currentState)
@@ -80,8 +123,8 @@ describe("Test setDayRange", () => {
   })
   it("resets day range when day range is invalid", () => {
     let date = new Date()
-    let currentState = { 
-      isRange : false, 
+    let currentState = {
+      isRange: false,
       userInput: {
         tourDates: {
           from: date,
@@ -90,11 +133,11 @@ describe("Test setDayRange", () => {
       },
       data: {
         limitdays: false,
-      }      
+      }
     }
-    
-    let output = { 
-      isRange : false, 
+
+    let output = {
+      isRange: false,
       userInput: {
         tourDates: {
           from: date,
@@ -103,7 +146,7 @@ describe("Test setDayRange", () => {
       },
       data: {
         limitdays: false,
-      }      
+      }
     }
     // console.log("-----------------currentState----------------------")
     // console.log(currentState)
@@ -119,23 +162,23 @@ describe("Test setDayRange", () => {
     let currentState = {
       minDays: 3,
       maxDays: 5,
-      isRange : false, 
+      isRange: false,
       userInput: {
         tourDates: {
-          from: new Date(2019,0,1),
-          to: new Date(2019,0,1)
+          from: new Date(2019, 0, 1),
+          to: new Date(2019, 0, 1)
         }
       },
-      data : {
+      data: {
         offsetnights: 1,
         limitdays: false
       }
     }
     let date = new Date(2019, 0, 4)
-    let output = { 
+    let output = {
       minDays: 3,
       maxDays: 5,
-      isRange : true, 
+      isRange: true,
       userInput: {
         tourDates: {
           days: 4,
@@ -145,10 +188,10 @@ describe("Test setDayRange", () => {
           to: date
         }
       },
-      data : {
+      data: {
         offsetnights: 1,
         limitdays: false
-      }      
+      }
     }
     // console.log("-----------------currentState----------------------")
     // console.log(currentState)
@@ -164,33 +207,33 @@ describe("Test setDayRange", () => {
     let currentState = {
       minDays: 3,
       maxDays: 3,
-      isRange : false, 
+      isRange: false,
       userInput: {
         tourDates: {
-          from: new Date(2018,0,1),
-          to: new Date(2018,0,3)
+          from: new Date(2018, 0, 1),
+          to: new Date(2018, 0, 3)
         }
       },
-      data : {
+      data: {
         offsetnights: 0,
         limitdays: true
       }
     }
-    let date = new Date(2019,0,1)
+    let date = new Date(2019, 0, 1)
     console.log('------------------')
     console.log(date)
     console.log('------------------')
     let output = {
       minDays: 3,
       maxDays: 3,
-      isRange : true, 
+      isRange: true,
       userInput: {
         tourDates: {
           days: 3,
           nights: 2,
           hotelNights: 2,
           from: date,
-          to: new Date(2019,0,3),
+          to: new Date(2019, 0, 3),
         }
       },
       data: {
@@ -206,7 +249,7 @@ describe("Test setDayRange", () => {
     let actualOutput = setDayRange(currentState, date)
     // console.log(actualOutput)
     expect(actualOutput).to.eql(output)
-  })   
+  })
 
 
 })
@@ -217,17 +260,17 @@ describe("Test resetDayRange", () => {
   })
   it("Returns expected result", () => {
     let date = new Date;
-    let input = { 
-      isRange : false, 
+    let input = {
+      isRange: false,
       userInput: {
         tourDates: {
-          from: new Date(2019,0,1),
-          to:  new Date(2019,0,3)
+          from: new Date(2019, 0, 1),
+          to: new Date(2019, 0, 3)
         }
       }
     }
-    let output = { 
-      isRange : false, 
+    let output = {
+      isRange: false,
       userInput: {
         tourDates: {
           from: date,
@@ -236,7 +279,7 @@ describe("Test resetDayRange", () => {
       }
     }
     expect(resetDayRange(input, date)).to.eql(output)
-  }) 
+  })
 })
 
 describe("Test getHotelNights", () => {
@@ -253,7 +296,7 @@ describe("Test getHotelNights", () => {
 describe("Test isValidDateRange", () => {
   it("can be imported", () => {
     expect(isValidDateRange).to.exist
-  }) 
+  })
   it("Returns expected values", () => {
     let from = new Date(2019, 0, 1);
     let max = 5;
@@ -266,27 +309,27 @@ describe("Test isValidDateRange", () => {
     expect(isInvalid).to.be.false
     expect(isInvalid2).to.be.false
     expect(isInvalid3).to.be.false
-  }) 
+  })
 })
 
 describe("Test initDayRangeValues", () => {
   it("can be imported", () => {
     expect(initDayRangeValues).to.exist
-  }) 
+  })
   it("Returns expected values", () => {
     let date = new Date(2019, 0, 1);
     let duration = 3;
     let startday = 2;
     let offset = 1;
     let drv = initDayRangeValues(date, duration, startday, offset)
-    expect(isEqual(drv.from, new Date(2019,0,3))).to.be.true
-    expect(isEqual(drv.to, new Date(2019,0,5))).to.be.true
+    expect(isEqual(drv.from, new Date(2019, 0, 3))).to.be.true
+    expect(isEqual(drv.to, new Date(2019, 0, 5))).to.be.true
     expect(drv.days).to.equal(3)
     expect(drv.maxDays).to.equal(5)
     expect(drv.minDays).to.equal(3)
     expect(drv.nights).to.equal(2)
     expect(drv.hotelNights).to.equal(1)
-  }) 
+  })
 })
 
 describe("getStartDate is working", () => {
@@ -295,11 +338,11 @@ describe("getStartDate is working", () => {
   })
   it("getStartDate returns expected value", () => {
     let date = new Date(2019, 1, 1)
-    expect(isEqual(getStartDate(date, 1), new Date(2019,1,2))).to.be.true;
-    expect(isEqual(getStartDate(date, 2), new Date(2019,1,3))).to.be.true;
-    expect(isEqual(getStartDate(date, 3), new Date(2019,1,4))).to.be.true;
-    expect(isEqual(getStartDate(date, 4), new Date(2019,1,5))).to.be.true;
-    expect(isEqual(getStartDate(date, 5), new Date(2019,1,6))).to.be.true;
+    expect(isEqual(getStartDate(date, 1), new Date(2019, 1, 2))).to.be.true;
+    expect(isEqual(getStartDate(date, 2), new Date(2019, 1, 3))).to.be.true;
+    expect(isEqual(getStartDate(date, 3), new Date(2019, 1, 4))).to.be.true;
+    expect(isEqual(getStartDate(date, 4), new Date(2019, 1, 5))).to.be.true;
+    expect(isEqual(getStartDate(date, 5), new Date(2019, 1, 6))).to.be.true;
   })
 })
 
@@ -308,7 +351,7 @@ describe("Test getDays", () => {
     expect(getDays).to.exist
   })
   it("Returns expected result", () => {
-    let from = new Date(2019, 0, 1); 
+    let from = new Date(2019, 0, 1);
     let to = new Date(2019, 0, 3);
     expect(getDays(from, to)).to.equal(3)
   })
@@ -319,7 +362,7 @@ describe("Test getNights", () => {
     expect(getNights).to.exist
   })
   it("Returns expected result", () => {
-    let from = new Date(2019, 0, 1); 
+    let from = new Date(2019, 0, 1);
     let to = new Date(2019, 0, 3);
     expect(getNights(from, to)).to.equal(2)
   })
@@ -330,7 +373,7 @@ describe("Test getHotelNights", () => {
     expect(getHotelNights).to.exist
   })
   it("Returns expected result", () => {
-    let from = new Date(2019, 0, 1); 
+    let from = new Date(2019, 0, 1);
     let to = new Date(2019, 0, 3);
     let offset = 1;
     let nights = getNights(from, to)
