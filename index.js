@@ -1,11 +1,9 @@
 import { addDays, differenceInDays, subDays } from 'date-fns';
 
-export const setOptionPaymentDate = (today, startDate, callback) => {
+export const setOptionPaymentDate = (today, startDate) => {
   return new Promise((resolve, reject) => {
     let optionDate;
     let daysFromStartDay = differenceInDays(startDate, today);
-    // console.log("--------------");
-    // console.log(daysFromStartDay);
     if (daysFromStartDay > 30) {
       optionDate = subDays(startDate, 15)
     } else if ( daysFromStartDay > 13 && daysFromStartDay < 30 ) {
@@ -39,6 +37,8 @@ const setWithLimitDays = (state, date) => {
   let offset = state.data.offsetnights
   state.userInput.tourDates.hotelNights = getHotelNights(nights, offset)
   state.isRange = true
+  let inquiryDate = state.userInput.tourDates.inquiryDate
+  state.userInput.optionDate = setOptionPaymentDate(inquiryDate, from)
   return state
 }
 
@@ -53,11 +53,13 @@ const setWithNoLimitDays = (state, date) => {
     let isValidRange = isValidDateRange(from, date, maxDays, minDays)
     if (isValidRange) {
       let offset = state.data.offsetnights
+      let inquiryDate = state.userInput.inquiryDate
       state.userInput.tourDates.to = date
       state.userInput.tourDates.days = days
       state.userInput.tourDates.nights = nights
       state.userInput.tourDates.hotelNights = getHotelNights(nights, offset)
       state.isRange = true
+      state.userInput.tourDates.optionDate = setOptionPaymentDate(inquiryDate, from)
     } else {
       state = resetDayRange(state, date) 
     }
@@ -75,7 +77,6 @@ export const resetDayRange = (state, date) => {
 export const isValidDateRange = (from, to, max, min) => {
   let days = getDays(from, to)
   let isWithinAcceptableDays = days >= min && days <= max
-  console.log(days, isWithinAcceptableDays)
   return isWithinAcceptableDays
 }
 
