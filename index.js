@@ -37,8 +37,6 @@ const setWithLimitDays = (state, date) => {
   let offset = state.data.offsetnights
   state.userInput.tourDates.hotelNights = getHotelNights(nights, offset)
   state.isRange = true
-  let inquiryDate = state.userInput.tourDates.inquiryDate
-  state.userInput.optionDate = setOptionPaymentDate(inquiryDate, from)
   return state
 }
 
@@ -53,13 +51,11 @@ const setWithNoLimitDays = (state, date) => {
     let isValidRange = isValidDateRange(from, date, maxDays, minDays)
     if (isValidRange) {
       let offset = state.data.offsetnights
-      let inquiryDate = state.userInput.inquiryDate
       state.userInput.tourDates.to = date
       state.userInput.tourDates.days = days
       state.userInput.tourDates.nights = nights
       state.userInput.tourDates.hotelNights = getHotelNights(nights, offset)
       state.isRange = true
-      state.userInput.tourDates.optionDate = setOptionPaymentDate(inquiryDate, from)
     } else {
       state = resetDayRange(state, date) 
     }
